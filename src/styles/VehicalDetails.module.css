@@ -1,0 +1,209 @@
+.container{
+    background-color: white;
+    padding: 15px 25px;
+    border: 1px dashed transparent;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    width: 50%;
+    margin-bottom: 2rem;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.row{
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) / -2);
+    margin-left: calc(var(--bs-gutter-x) / -2);
+}
+
+.logoSec{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.logoSec img{
+    width: 160px;
+    margin-bottom: 10px;
+    height: auto;
+    transform: scale(1);
+   -webkit-transform: scale(1);
+   -moz-transform: scale(1);
+   -ms-transform: scale(1);
+   -o-transform: scale(1);
+   transition: all 1s ease;
+   -webkit-transition: all 1s ease;
+   -moz-transition: all 1s ease;
+   -ms-transition: all 1s ease;
+   -o-transition: all 1s ease;
+}
+
+.container:hover img{
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    -o-transform: scale(1.1);
+}
+
+.container:hover{
+    transform: translateY(-5px);
+    -webkit-transform: translateY(-5px);
+    -moz-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    -o-transform: translateY(-5px);
+}
+
+.logoSec .title{
+    display: block;
+    text-transform: capitalize;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.logoSec .type{
+    margin-bottom: 0;
+    text-transform: capitalize;
+    color: rgba(0, 0, 0, 0.56);
+    margin-top: 1rem;
+    font-size: 0.8rem;
+}
+
+.carDetails {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.carDetails ul li {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    text-transform: capitalize;
+    color: #3e3e3e;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    margin: 1rem;
+}
+
+.carDetails ul li img {
+    margin-right: 5px;
+    width: 16px;
+}
+
+.price{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.price h4 {
+    margin-bottom: -4px;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    text-transform: capitalize;
+}
+
+.price h6 {
+    font-size: 14px;
+    color: grey;
+    text-transform: capitalize;
+    margin-bottom: 0;
+    margin-top: 10px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+}
+
+.price h6 span {
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+}
+
+.bookCab{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 100%;
+    margin-right: 1.5rem;
+}
+
+.bookCab span{
+    background-color: #2474f5;
+    color: white;
+    padding: 9px 20px;
+    -webkit-box-shadow: 1px 11px 20px 0px rgb(233 179 14 / 12%);
+    box-shadow: 1px 11px 20px 0px rgb(233 179 14 / 12%);
+    padding: 10px 16px;
+    font-size: 1.5rem;
+    text-transform: capitalize;
+    cursor: pointer;
+    line-height: 20px;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 0;
+    text-decoration: none;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
+    -moz-transition: 0.3s ease;
+    -ms-transition: 0.3s ease;
+    -o-transition: 0.3s ease;
+}
+
+.bookCab span:hover{
+    border: 2px solid  #2474f5;
+    background-color: #fff;
+    color: #2474f5;
+}
+
+
+@media(max-width:1000px){
+    .row{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .col{
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media(max-width: 500px){
+    .container{
+        padding: 1rem;
+    }
+}

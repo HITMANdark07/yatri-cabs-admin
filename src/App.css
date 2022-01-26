@@ -1,0 +1,328 @@
+.App {
+  text-align: center;
+}
+.App {
+  text-align: center;
+}
+.main-container{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 2rem;
+  margin-top: 7rem;
+}
+.form-container{
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  margin: 0 20%;
+  border-radius: 5px;
+  margin-top: 7rem;
+  flex-direction: column;
+  font-size: 200;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.form{
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  min-width: 80%;
+  justify-content: flex-start;
+}
+label{
+  text-align: left;
+  margin-left: 5%;
+}
+input{
+  margin: 10px auto;
+  border-radius: 20px;
+}
+.upload-image{
+  background-color: #ffffff;
+  border: 2px solid #2474f5;
+  max-width: 200px;
+  margin: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 20px;
+  color: #2474f5;
+  padding: .6rem;
+}
+.upload-image:hover{
+  border: 3px solid #2474f5;
+}
+.form-input{
+  padding: .8rem;
+  min-width: 90%;
+}
+.form-select{
+  padding: .8rem;
+  margin: 10px auto;
+  border-radius: 20px;
+  min-width: 95%;
+}
+option{
+  font-size: 15px;
+  padding: 5px;
+}
+.filter{
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  z-index: 100;
+}
+.container{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 20px auto;
+}
+.events{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+}
+.event{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  min-width: 300px;
+  margin:5px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  border: 2px solid purple;
+  padding:5px;
+  cursor: pointer;
+  border-radius: 1rem;
+}
+.event:hover{
+  -webkit-transform: scale(1.025);
+      -ms-transform: scale(1.025);
+          transform: scale(1.025);
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+input[type='date']{
+  /* width: 100%; */
+  padding: 12px 20px;
+  margin: 8px 5px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 2rem;
+}
+.filter{
+  padding: 12px 20px;
+  margin: 8px 5px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 2rem;
+}
+.custom-dates{
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+          margin-top: 18vh;
+}
+.event-title{
+  font-size: 1rem;
+  flex: 1;
+  font-weight: 700;
+  text-align: left;
+  padding-left: .5rem;
+  padding-top: .5rem;
+}
+.event-date{
+  flex: 1;
+  background-color:blanchedalmond;
+  border-radius: 0.5rem;
+  text-align: left;
+  padding-left: .5rem;
+  padding-top: .5rem;
+}
+.event-data{
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  background-color: aqua;
+  border-radius: 0.5rem;
+  justify-content: space-evenly;
+}
+.submit{
+  width: 200px;
+  align-self: left;
+  margin-top: 20px;
+  margin-left: 5%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: '700';
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  background-color: purple;
+  color: white;
+
+}
+.success{
+  background-color: rgba(172, 255, 47, 0.534);
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  border-radius: 5px;
+}
+.cross{
+  cursor: pointer;
+}
+.warning{
+  background-color: rgba(255, 166, 0, 0.473);
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  border-radius: 5px;
+}
+.error{
+  background-color: rgba(255, 0, 0, 0.473);
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  border-radius: 5px;
+}
+.submit:disabled{
+  background-color: grey;
+}
+.submit:hover{
+  transform: scale(1.05);
+}
+.add-new-car-button{
+  background-color: #4285F4;
+  color: white;
+  box-shadow: 0 6px #2977f5;
+  flex-direction: row;
+  justify-content: space-between;
+  min-width: 200px;
+  font-size: 15px;
+  border: none;
+  outline: none;
+  padding: 0.8rem;
+  cursor: pointer;
+  border-radius: 50px;
+}
+.add-new-car-button:hover{
+  box-shadow:0 4px #2977f5;
+  top:2px;
+}
+.add-new-car-button:active{
+  top:6px;
+  box-shadow: 0 0 #2474f5;
+}
+
+.switch {
+  position: relative;
+  display: block;
+  width: 60px;
+  margin: 10px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.category-cards-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media screen and (max-width: 680px) {
+  .form{
+    min-width: 90%;
+  }
+  .form-container{
+    margin: 10px;
+    margin-top: 7rem;
+  }
+}
