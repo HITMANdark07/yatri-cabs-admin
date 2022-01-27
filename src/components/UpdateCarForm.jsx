@@ -1,10 +1,11 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect } from 'react-router-dom';
 import "../App.css";
 import { isAuthenticated } from '../auth';
 
-function AddCarForm() {
+function UpdateCarForm({carId}) {
 
     const [values, setValues] = useState({
         reg_number:"",
@@ -16,10 +17,10 @@ function AddCarForm() {
         loading:false,
         redirect:false,
         status:"",
-        button:'ADD'
+        button:'UPDATE'
     });
     const [categories, setCategories] = useState([]);
-    const init =() => {
+    const init = useCallback(() => {
         axios({
         method:'GET',
         url:`${process.env.REACT_APP_API}/category-list`
@@ -27,23 +28,43 @@ function AddCarForm() {
         setCategories(res.data);
         setValues((state) => ({
             ...state,
-            type:res.data[0]._id
         }));
         }).catch((err) => {
         console.log(err);
         })
-    }
+    },[])
+    const getCarDetails = useCallback(() => {
+        axios({
+            method:'GET',
+            url:`${process.env.REACT_APP_API}/car/details/${carId}`
+        }).then((res) => {
+            if(res?.data?._id){
+                setValues((state) => ({
+                    ...state,
+                    reg_number:res.data.reg_number,
+                    type:res.data?.type?._id,
+                    permit_validity:moment(res.data?.permit_validity).format('YYYY-MM-DD'),
+                    insurance_validity:moment(res.data?.insurance_validity).format('YYYY-MM-DD'),
+                    image:res.data?.image
+                }))
+            }
+        }).catch((err) => {
+            console.log(err.response.data.error);
+            alert("SOMETHING WENT WRONG");
+        })
+    },[carId]);
 
     useEffect(() => {
         init();
-    },[]);
+        getCarDetails();
+    },[init, getCarDetails]);
     const {message, reg_number, type,permit_validity,image,insurance_validity, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
             ...state,
             loading:true,
-            button:'ADDING...',
+            button:'UPDATING...',
         }))
         const data = {
             reg_number,
@@ -53,7 +74,7 @@ function AddCarForm() {
             insurance_validity
         }
         console.log(data);
-        axios.post(`${process.env.REACT_APP_API}/admin/car/add/${isAuthenticated()?.admin?._id}`,{
+        axios.put(`${process.env.REACT_APP_API}/admin/car/update/${carId}/${isAuthenticated()?.admin?._id}`,{
             ...data
         },{
             headers:{
@@ -68,10 +89,10 @@ function AddCarForm() {
                     image:"",
                     permit_validity:"",
                     insurance_validity:"",
-                    button:'ADD',
+                    button:'UPDATE',
                     redirect:true,
                     loading:false,
-                    message:`${res?.data?.admin?.name} is Successfully Registered`,
+                    message:`${res?.data?.reg_number} is Successfully Updated`,
                     status:'success'
                 }));
             }
@@ -79,7 +100,7 @@ function AddCarForm() {
             setValues((state) => ({
                 ...state,
                 loading:false,
-                button:'ADD',
+                button:'UPDATE',
                 status:"warning",
                 message:err?.response?.data?.error
             }))
@@ -176,4 +197,4 @@ function AddCarForm() {
   </div>;
 }
 
-export default AddCarForm;
+export default UpdateCarForm;

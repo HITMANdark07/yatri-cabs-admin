@@ -9,6 +9,7 @@ import AddCarsPage from './pages/AddCarsPage';
 import AddCategoryPage from './pages/AddCategoryPage';
 import CarCategory from './pages/CarCategory';
 import UpdateCategoryPage from './pages/UpdateCategoryPage';
+import UpdateCarPage from './pages/UpdateCarPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <PrivateRoute path="/category" exact component={CarCategory} />
         <PrivateRoute path="/add-category" exact component={AddCategoryPage} />
         <PrivateRoute path="/update/category/:categoryId" exact component={UpdateCategoryPage} />
+        <PrivateRoute path="/update/car/:carId" exact component={UpdateCarPage} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>
