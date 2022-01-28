@@ -12,7 +12,7 @@ import UpdateCategoryPage from './pages/UpdateCategoryPage';
 import UpdateCarPage from './pages/UpdateCarPage';
 
 function App() {
-  return (
+  return ( 
     <BrowserRouter>
       <Switch>
         <Route path="/" exact component={DashBoard} />
