@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import "../App.css";
 import { isAuthenticated } from '../auth';
+// import Autocomplete from "react-google-autocomplete";
 
 function AddCarForm() {
 
@@ -165,6 +166,12 @@ function AddCarForm() {
               </select>
               <label style={{marginLeft:'2%'}} className='upload-image' htmlFor='car-image'>Upload Car Image </label>
               <input id="car-image" style={{display:'none'}} type="file" accept="image/*" className='form-input' />
+              {/* <Autocomplete
+                apiKey={"AIzaSyCVuzwz465qhBxq0szBgIvbWLCYStzXlrE"}
+                onPlaceSelected={(place) => {
+                    console.log(place);
+                }}
+                /> */}
               <label>Permit Validity <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="permit_validity" value={permit_validity} style={{width:'95%', alignSelf:'center'}} className='form-input' type="date" placeholder='Permit Validity' required />
               <label>Insurance Validity <span style={{color:'red'}}>*</span></label>

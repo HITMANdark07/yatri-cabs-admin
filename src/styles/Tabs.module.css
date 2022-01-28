@@ -1,0 +1,35 @@
+.main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 90%;
+    /* justify-content: flex-start; */
+}
+.tab{
+    height: 200px;
+    width: 200px;
+    border-radius: 8px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    align-items: center;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.content{
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    /* padding: 8px; */
+}
+.tabs{
+    font-size: 25;
+    font-weight: '500';
+}
+.tab:hover> .icon{
+    transform: scale(1.055);
+    transition: all 0.4s;
+}

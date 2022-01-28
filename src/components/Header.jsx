@@ -5,49 +5,58 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { isAuthenticated } from '../auth';
 import { withRouter } from 'react-router-dom';
 import { signout } from '../auth';
+import TemporaryDrawer from './TemporaryDrawer';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = ({history}) => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [showDrawer, setShowDrawer] = React.useState(false);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const toggleDrawer = () => {
+    setShowDrawer((state) => !state);
+  }
 
   return (
+    <>
+    <TemporaryDrawer showDrawer={showDrawer} toggleDrawer={toggleDrawer} />
     <AppBar position="fixed" color="primary" enableColorOnDark>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+        <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={toggleDrawer}
+              color="inherit"
+            >
+              <MenuIcon />
+          </IconButton>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            sx={{ mr: 2, display: 'flex' }}
           >
             Yatri-Cabs
           </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}></Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -98,16 +107,16 @@ const Header = ({history}) => {
               </MenuItem>
               
             </Menu>
-          </Box>
-          <Typography
+          </Box> */}
+          {/* <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
             Yatri-Cabs
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          </Typography> */}
+          {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
     
               <Button
                 onClick={() => {
@@ -137,16 +146,20 @@ const Header = ({history}) => {
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 Coupon
-              </Button>
+              </Button> 
             
-          </Box>
+          </Box> */}
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 1 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 2, float:'right' }}>
                 <Avatar alt="Remy Sharp" src="https://www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png" />
-              </IconButton>
-            </Tooltip>
+                <Typography sx={{color:'#fff', marginLeft:1}} >
+                  {isAuthenticated().admin?.name}
+                </Typography>
+                </IconButton>
+              </Tooltip>
+            
             
   
                 {isAuthenticated() ?
@@ -208,6 +221,7 @@ const Header = ({history}) => {
         </Toolbar>
       </Container>
     </AppBar>
+    </>
   );
 };
 export default withRouter(Header);
