@@ -316,6 +316,26 @@ input:checked + .slider:before {
   flex-direction: column;
   align-items: center;
 }
+.location-box{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-width: max-content;
+  margin: 5px;
+  padding: 12px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.location-font{
+  font-size: 22px;
+}
+.location-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 5% 20%;
+}
 
 @media screen and (max-width: 680px) {
   .form{
