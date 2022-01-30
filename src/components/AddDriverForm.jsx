@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import "../App.css";
 import { isAuthenticated } from '../auth';
+import makeToast from '../Toaster';
 
 function AddCategoryForm() {
     const [locations, setLocations] = useState([]);
@@ -13,6 +14,7 @@ function AddCategoryForm() {
         aadhar_number:"",
         image:"",
         location:"",
+        showImage:"",
         dl_number:"",
         message:'SUCCESS',
         loading:false,
@@ -51,7 +53,7 @@ function AddCategoryForm() {
 
         axios({
             method:'POST',
-            url:`${process.env.REACT_APP_API}/admin/driver/register/${isAuthenticated()?.admin?._id}`,
+            url:`${process.env.REACT_APP_API}/driver/register/${isAuthenticated()?.admin?._id}`,
             data:{
                 name:name,
                 phone:phone,
@@ -156,6 +158,8 @@ function AddCategoryForm() {
               <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>ADD DRIVER</h2>
               <label>Driver Name <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="name" value={name} className='form-input' type="text" placeholder='Enter Driver Name' required />
+              <label>Driver Phone <span style={{color:'red'}}>*</span></label>
+              <input onChange={onchangeHandler} name="phone" value={phone} className='form-input' type="text" placeholder='Enter Driver Phone Number' required />
               <label>Select Location <span style={{color:'red'}}>*</span></label>
               <select value={location} onChange={(e) => {
                   setValues((state) =>({
@@ -165,7 +169,7 @@ function AddCategoryForm() {
               }} className="form-select">
                   {
                     locations.map((loc) => (
-                        <option value={loc._id}>{loc.location}</option>
+                        <option key={loc._id} value={loc._id}>{loc.location}</option>
                     ))
                   }
                   {/* <option value="prime">Prime</option>
@@ -173,6 +177,25 @@ function AddCategoryForm() {
               </select>
               <label className='upload-image' style={{marginLeft:'3%'}} htmlFor='car-image'>Upload Driver Photo <span style={{color:'red'}}>*</span></label>
               <input id="car-image" style={{display:'none'}} type="file" onChange={(e) => {
+                  const formData = new FormData();
+                  formData.set('photo',e.target.files[0]);
+                  axios({
+                      method:'POST',
+                      url:`${process.env.REACT_APP_API}/image/upload`,
+                      data:formData
+                  }).then((res) => {
+                      if(res?.data?.id){
+                        makeToast("success",res.data.message);
+                        setValues((state) => ({
+                            ...state,
+                            image:res.data.id,
+                            showImage:`${process.env.REACT_APP_API}/image/photo/${res.data.id}`
+                        }))
+                      }
+                      console.log(res.data);
+                  }).catch((err) => {
+                      makeToast("error", err.response.data.error);
+                  })
                 //   setValues((state) => ({
                 //       ...state,
                 //       photo:e.target.files[0],
