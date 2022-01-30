@@ -48,20 +48,20 @@ function AddCategoryForm() {
             loading:true,
             button:'ADDING...',
         }))
-        
-        // console.log(data);
+        const data ={
+            name:name,
+            phone:phone,
+            location:location,
+            password:password,
+            aadhar_number:aadhar_number,
+            dl_number:dl_number,
+            image:image
+        }
 
         axios({
             method:'POST',
             url:`${process.env.REACT_APP_API}/driver/register/${isAuthenticated()?.admin?._id}`,
-            data:{
-                name:name,
-                phone:phone,
-                password:password,
-                aadhar_number:aadhar_number,
-                dl_number:dl_number,
-                image:image
-            },
+            data:data,
             headers:{
                 Authorization:`Bearer ${isAuthenticated()?.token}`
             }
@@ -146,7 +146,7 @@ function AddCategoryForm() {
     const Redirecting =() => {
         if(redirect){
             return (
-                <Redirect to="/" />
+                <Redirect to="/driver" />
             )
         }
     }

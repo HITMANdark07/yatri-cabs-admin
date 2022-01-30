@@ -11,6 +11,9 @@ function AddCarForm() {
         reg_number:"",
         type:"",
         image:"",
+        location:"",
+        tarrif:"",
+        count:"",
         permit_validity:"",
         insurance_validity:"",
         message:'SUCCESS',
@@ -19,6 +22,7 @@ function AddCarForm() {
         status:"",
         button:'ADD'
     });
+    const [locations, setLocations] = useState([]);
     const [categories, setCategories] = useState([]);
     const init =() => {
         axios({
@@ -35,10 +39,27 @@ function AddCarForm() {
         })
     }
 
+    const getLocs =() => {
+        axios({
+            method:"GET",
+            url:`${process.env.REACT_APP_API}/location/list`,
+        }).then((res) => {
+            setLocations(res.data);
+            setValues((state) => ({
+                ...state,
+                location:res?.data[0]?._id
+            }))
+        }).catch((err) => {
+            console.log(err.response?.data?.error);
+            alert("SOMETHING WENT WRONG");
+        })
+    };
+
     useEffect(() => {
         init();
+        getLocs();
     },[]);
-    const {message, reg_number, type,permit_validity,image,insurance_validity, status,loading,button, redirect} = values;
+    const {message, reg_number, type,permit_validity,count,image,location,tarrif,insurance_validity, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -50,6 +71,9 @@ function AddCarForm() {
             reg_number,
             type,
             image,
+            tarrif,
+            count,
+            location,
             permit_validity,
             insurance_validity
         }
@@ -164,6 +188,21 @@ function AddCarForm() {
                     ))
                   }
               </select>
+              <label>Select Location <span style={{color:'red'}}>*</span></label>
+              <select value={location} onChange={(e) => {
+                  setValues((state) =>({
+                      ...state,
+                      location:e.target.value
+                  }));
+              }} className="form-select">
+                  {
+                    locations.map((loc) => (
+                        <option key={loc._id} value={loc._id}>{loc.location}</option>
+                    ))
+                  }
+                  {/* <option value="prime">Prime</option>
+                  <option value="standard">Standard</option> */}
+              </select>
               <label style={{marginLeft:'2%'}} className='upload-image' htmlFor='car-image'>Upload Car Image </label>
               <input id="car-image" style={{display:'none'}} type="file" accept="image/*" className='form-input' />
               {/* <Autocomplete
@@ -172,6 +211,10 @@ function AddCarForm() {
                     console.log(place);
                 }}
                 /> */}
+              <label>Enter Number of Cars Available <span style={{color:'red'}}>*</span></label>
+              <input onChange={onchangeHandler} name="count" value={count} className='form-input' type="text" placeholder='Enter Cars Count' required />
+              <label>Enter Tarrif <span style={{color:'red'}}>*</span></label>
+              <input onChange={onchangeHandler} name="tarrif" value={tarrif} className='form-input' type="text" placeholder='Enter Tarrif' required />
               <label>Permit Validity <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="permit_validity" value={permit_validity} style={{width:'95%', alignSelf:'center'}} className='form-input' type="date" placeholder='Permit Validity' required />
               <label>Insurance Validity <span style={{color:'red'}}>*</span></label>

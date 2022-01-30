@@ -11,6 +11,7 @@ import CarCategory from './pages/CarCategory';
 import UpdateCategoryPage from './pages/UpdateCategoryPage';
 import UpdateCarPage from './pages/UpdateCarPage';
 import DriverPage from './pages/DriverPage';
+import AddDriverPage from './pages/AddDriverPage';
 import LocationPage from './pages/LocationPage';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <PrivateRoute path="/update/car/:carId" exact component={UpdateCarPage} />
         <PrivateRoute path="/location" exact component={LocationPage} />
         <PrivateRoute path="/driver" exact component={DriverPage} />
+        <PrivateRoute path="/add-driver" exact component={AddDriverPage} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>

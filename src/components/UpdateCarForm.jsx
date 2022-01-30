@@ -11,6 +11,9 @@ function UpdateCarForm({carId}) {
         reg_number:"",
         type:"",
         image:"",
+        location:"",
+        tarrif:"",
+        count:"",
         permit_validity:"",
         insurance_validity:"",
         message:'SUCCESS',
@@ -19,6 +22,7 @@ function UpdateCarForm({carId}) {
         status:"",
         button:'UPDATE'
     });
+    const [locations, setLocations] = useState([]);
     const [categories, setCategories] = useState([]);
     const init = useCallback(() => {
         axios({
@@ -26,13 +30,21 @@ function UpdateCarForm({carId}) {
         url:`${process.env.REACT_APP_API}/category-list`
         }).then((res) => {
         setCategories(res.data);
-        setValues((state) => ({
-            ...state,
-        }));
         }).catch((err) => {
         console.log(err);
         })
     },[])
+    const getLocs =() => {
+        axios({
+            method:"GET",
+            url:`${process.env.REACT_APP_API}/location/list`,
+        }).then((res) => {
+            setLocations(res.data);
+        }).catch((err) => {
+            console.log(err.response?.data?.error);
+            alert("SOMETHING WENT WRONG");
+        })
+    };
     const getCarDetails = useCallback(() => {
         axios({
             method:'GET',
@@ -43,6 +55,9 @@ function UpdateCarForm({carId}) {
                     ...state,
                     reg_number:res.data.reg_number,
                     type:res.data?.type?._id,
+                    count: res.data?.count,
+                    tarrif: res.data.tarrif,
+                    location: res.data.location,
                     permit_validity:moment(res.data?.permit_validity).format('YYYY-MM-DD'),
                     insurance_validity:moment(res.data?.insurance_validity).format('YYYY-MM-DD'),
                     image:res.data?.image
@@ -56,9 +71,10 @@ function UpdateCarForm({carId}) {
 
     useEffect(() => {
         init();
+        getLocs();
         getCarDetails();
     },[init, getCarDetails]);
-    const {message, reg_number, type,permit_validity,image,insurance_validity, status,loading,button, redirect} = values;
+    const {message, reg_number, type,permit_validity,location, tarrif, count,image,insurance_validity, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -70,6 +86,9 @@ function UpdateCarForm({carId}) {
             reg_number,
             type,
             image,
+            location,
+            tarrif,
+            count,
             permit_validity,
             insurance_validity
         }
@@ -184,8 +203,28 @@ function UpdateCarForm({carId}) {
                     ))
                   }
               </select>
+              <label>Select Location <span style={{color:'red'}}>*</span></label>
+              <select value={location} onChange={(e) => {
+                  setValues((state) =>({
+                      ...state,
+                      location:e.target.value
+                  }));
+              }} className="form-select">
+                  {
+                    locations.map((loc) => (
+                        <option key={loc._id} value={loc._id}>{loc.location}</option>
+                    ))
+                  }
+                  {/* <option value="prime">Prime</option>
+                  <option value="standard">Standard</option> */}
+              </select>
               <label style={{marginLeft:'2%'}} className='upload-image' htmlFor='car-image'>Upload Car Image </label>
               <input id="car-image" style={{display:'none'}} type="file" accept="image/*" className='form-input' />
+
+              <label>Enter Number of Cars Available <span style={{color:'red'}}>*</span></label>
+              <input onChange={onchangeHandler} name="count" value={count} className='form-input' type="text" placeholder='Enter Cars Count' required />
+              <label>Enter Tarrif <span style={{color:'red'}}>*</span></label>
+              <input onChange={onchangeHandler} name="tarrif" value={tarrif} className='form-input' type="text" placeholder='Enter Tarrif' required />
               <label>Permit Validity <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="permit_validity" value={permit_validity} style={{width:'95%', alignSelf:'center'}} className='form-input' type="date" placeholder='Permit Validity' required />
               <label>Insurance Validity <span style={{color:'red'}}>*</span></label>
