@@ -13,6 +13,7 @@ import UpdateCarPage from './pages/UpdateCarPage';
 import DriverPage from './pages/DriverPage';
 import AddDriverPage from './pages/AddDriverPage';
 import LocationPage from './pages/LocationPage';
+import UsersPage from './pages/UsersPage';
 
 function App() {
   return ( 
@@ -29,6 +30,7 @@ function App() {
         <PrivateRoute path="/location" exact component={LocationPage} />
         <PrivateRoute path="/driver" exact component={DriverPage} />
         <PrivateRoute path="/add-driver" exact component={AddDriverPage} />
+        <PrivateRoute path="/users" exact component={UsersPage} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>
