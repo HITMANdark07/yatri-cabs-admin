@@ -79,7 +79,7 @@ function CarsPage({history}) {
               <StyledTableCell component="th" scope="row">
                 {car.reg_number}
               </StyledTableCell>
-              <StyledTableCell align="right">{car?.location?.location}</StyledTableCell>
+              <StyledTableCell align="right">{car?.location?.name}</StyledTableCell>
               <StyledTableCell align="right">{car?.type?.title}</StyledTableCell>
               <StyledTableCell align="right">{moment(car?.insurance_validity).format('DD MMM YYYY')}</StyledTableCell>
               <StyledTableCell align="right">{moment(car?.permit_validity).format('DD MMM YYYY')}</StyledTableCell>

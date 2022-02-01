@@ -187,7 +187,7 @@ function UpdateCarForm({carId}) {
       <div className='form-container'>
           {Redirecting()}
           <form className='form' onSubmit={signup}>
-              <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>ADD CAR</h2>
+              <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>UPDATE CAR</h2>
               <label>Registration Number <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="reg_number" value={reg_number} className='form-input' type="text" placeholder='Enter Vehical Registration Number' required />
               <label>Select Car Type <span style={{color:'red'}}>*</span></label>
@@ -212,7 +212,7 @@ function UpdateCarForm({carId}) {
               }} className="form-select">
                   {
                     locations.map((loc) => (
-                        <option key={loc._id} value={loc._id}>{loc.location}</option>
+                        <option key={loc._id} value={loc._id}>{loc.name}</option>
                     ))
                   }
                   {/* <option value="prime">Prime</option>

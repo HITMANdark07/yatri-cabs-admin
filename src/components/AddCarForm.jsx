@@ -115,7 +115,7 @@ function AddCarForm() {
             ...state,
             status:""
         }))
-    }
+    } 
     const showMessage = () =>{
         if(status!==""){
             if(status==="success"){
@@ -197,7 +197,7 @@ function AddCarForm() {
               }} className="form-select">
                   {
                     locations.map((loc) => (
-                        <option key={loc._id} value={loc._id}>{loc.location}</option>
+                        <option key={loc._id} value={loc._id}>{loc.name}</option>
                     ))
                   }
                   {/* <option value="prime">Prime</option>

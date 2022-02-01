@@ -115,7 +115,7 @@ const DriverPage = ({history}) => {
                     }} checked={driver?.status===1 ? true : false} />
                 </StyledTableCell>
                 <StyledTableCell align="right">{driver.phone}</StyledTableCell>
-                <StyledTableCell align="right">{driver?.location?.location}</StyledTableCell>
+                <StyledTableCell align="right">{driver?.location?.name}</StyledTableCell>
                 <StyledTableCell align="right">{driver?.dl_number}</StyledTableCell>
                 <StyledTableCell align="right">{driver?.aadhar_number}</StyledTableCell>
                 {/* <StyledTableCell align="right">{}</StyledTableCell> */}

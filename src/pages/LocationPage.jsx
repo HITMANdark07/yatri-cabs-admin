@@ -33,7 +33,7 @@ const LocationPage  = () => {
                 locations.map((loc) => (
                     <div key={loc._id} className="location-box">
                         <LocationOnIcon />
-                        <div className="location-font">{loc.location}</div>
+                        <div className="location-font">{loc.name}</div>
                     </div>
                 ))
             }

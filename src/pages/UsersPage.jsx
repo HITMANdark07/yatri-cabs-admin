@@ -13,10 +13,8 @@ import Switch from '@mui/material/Switch';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import EditIcon from '@mui/icons-material/Edit';
-import moment from 'moment';
-// import { IconButton } from '@mui/material';
 import { isAuthenticated } from '../auth';
+import UserDetailList from '../components/UserDetailList';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,15 +26,15 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
+// const StyledTableRow = styled(TableRow)(({ theme }) => ({
+//   '&:nth-of-type(odd)': {
+//     backgroundColor: theme.palette.action.hover,
+//   },
+//   // hide last border
+//   '&:last-child td, &:last-child th': {
+//     border: 0,
+//   },
+// }));
 
 
 
@@ -72,32 +70,6 @@ function UsersPage({history}) {
       })
   }
 
-  const updateStatus = (status, id) => {
-    if(status===1){
-        status=0;
-    }else status=1;
-    axios({
-        method:'PUT',
-        url:`${process.env.REACT_APP_API}/user/update/${id}/${isAuthenticated()?.admin?._id}`,
-        headers:{
-            Authorization:`Bearer ${isAuthenticated()?.token}`
-        },
-        data:{
-            status:status
-        }
-    }).then((res) => {
-        if(res?.data?._id){
-            if(!role){
-                initCorporate();
-            }else{
-                initUser();
-            }
-        }
-    }).catch((err) => {
-        console.log(err?.response?.data?.error);
-        alert("SOMETING WENT WRONG");
-    })
-  }
 
   useEffect(() => {
     if(!role){
@@ -122,30 +94,13 @@ function UsersPage({history}) {
             <StyledTableCell align="right">Registered</StyledTableCell>
             <StyledTableCell align="right">Updated</StyledTableCell>
             <StyledTableCell align="right">Role</StyledTableCell>
-            {/* <StyledTableCell align="right">tarrif</StyledTableCell> */}
-            {/* <StyledTableCell align="right">edit</StyledTableCell> */}
+            {!role &&<StyledTableCell align="right">price</StyledTableCell>}
+            {!role && <StyledTableCell align="right">edit</StyledTableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
           {users.map((user) => (
-            <StyledTableRow key={user._id}>
-              <StyledTableCell component="th" scope="row">
-                {user.name}
-              </StyledTableCell>
-              <StyledTableCell align="right">{user?.email}</StyledTableCell>
-              <StyledTableCell align="right"><Switch onClick={() => updateStatus(user?.status,user?._id)} checked={user?.status===1 ? true : false} /></StyledTableCell>
-              <StyledTableCell align="right">{moment(user?.createdAt).fromNow()}</StyledTableCell>
-              <StyledTableCell align="right">{moment(user?.updatedAt).fromNow()}</StyledTableCell>
-              <StyledTableCell align="right">{user?.role}</StyledTableCell>
-              {/* <StyledTableCell align="right">{user?.tarrif}</StyledTableCell> */}
-              {/* <StyledTableCell align="right">
-                <IconButton onClick={() => {
-                  history.push(`/update/user/${user?._id}`)
-                }}>
-                  <EditIcon color='"primary' />
-                </IconButton>
-              </StyledTableCell> */}
-            </StyledTableRow>
+            <UserDetailList key={user._id} initUser={initUser} initCorporate={initCorporate} role={role} user={user} />
           ))}
         </TableBody>
       </Table>
