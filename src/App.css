@@ -319,7 +319,7 @@ input:checked + .slider:before {
 .location-box{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   min-width: max-content;
   margin: 5px;
   padding: 12px;
@@ -331,7 +331,7 @@ input:checked + .slider:before {
 }
 .location-container{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: flex-start;
   margin: 5% 20%;

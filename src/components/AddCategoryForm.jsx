@@ -8,7 +8,6 @@ function AddCategoryForm() {
 
     const [values, setValues] = useState({
         title:"",
-        type:"mini",
         seats:"",
         photo:null,
         luggage:"",
@@ -20,7 +19,7 @@ function AddCategoryForm() {
         status:"",
         button:'ADD'
     });
-    const {message, title, type,seats,photo,luggage,ac, status,loading,showImage,button, redirect} = values;
+    const {message, title,seats,photo,luggage,ac, status,loading,showImage,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -31,7 +30,6 @@ function AddCategoryForm() {
         
         const formData = new FormData();
         formData.set("title", title);
-        formData.set("type",type);
         formData.set("photo", photo);
         formData.set("ac",ac);
         formData.set("seats", seats);
@@ -50,7 +48,6 @@ function AddCategoryForm() {
                 setValues((state) => ({
                     ...state,
                     title:"",
-                    type:"",
                     seats:"",
                     photo:null,
                     luggage:"",
@@ -125,7 +122,7 @@ function AddCategoryForm() {
     const Redirecting =() => {
         if(redirect){
             return (
-                <Redirect to="/" />
+                <Redirect to="/category" />
             )
         }
     }
@@ -136,17 +133,7 @@ function AddCategoryForm() {
               <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>ADD CAR CATEGORY</h2>
               <label>Car Modal <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="title" value={title} className='form-input' type="text" placeholder='Enter Vehical Model' required />
-              <label>Select Car Type <span style={{color:'red'}}>*</span></label>
-              <select value={type} onChange={(e) => {
-                  setValues((state) =>({
-                      ...state,
-                      type:e.target.value
-                  }));
-              }} className="form-select">
-                  <option value="mini">Mini</option>
-                  <option value="prime">Prime</option>
-                  <option value="standard">Standard</option>
-              </select>
+              
               <label className='upload-image' style={{marginLeft:'3%'}} htmlFor='car-image'>Upload Car Image <span style={{color:'red'}}>*</span></label>
               <input id="car-image" style={{display:'none'}} type="file" onChange={(e) => {
                   setValues((state) => ({

@@ -2,6 +2,11 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import "../App.css";
+import { TextField } from '@mui/material';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import Stack from '@mui/material/Stack';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { isAuthenticated } from '../auth';
 // import Autocomplete from "react-google-autocomplete";
 
@@ -12,16 +17,18 @@ function AddCarForm() {
         type:"",
         image:"",
         location:"",
-        tarrif:"",
-        count:"",
-        permit_validity:"",
-        insurance_validity:"",
+        make_model:"",
+        permit_validity_from:new Date(),
+        permit_validity_to:new Date(),
+        insurance_validity_from:new Date(),
+        insurance_validity_to:new Date(),
         message:'SUCCESS',
         loading:false,
         redirect:false,
         status:"",
         button:'ADD'
     });
+
     const [locations, setLocations] = useState([]);
     const [categories, setCategories] = useState([]);
     const init =() => {
@@ -59,7 +66,7 @@ function AddCarForm() {
         init();
         getLocs();
     },[]);
-    const {message, reg_number, type,permit_validity,count,image,location,tarrif,insurance_validity, status,loading,button, redirect} = values;
+    const {message, reg_number, type,permit_validity_from,make_model,permit_validity_to,image,location,insurance_validity_from, insurance_validity_to, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -71,11 +78,12 @@ function AddCarForm() {
             reg_number,
             type,
             image,
-            tarrif,
-            count,
             location,
-            permit_validity,
-            insurance_validity
+            make_model,
+            permit_validity_from,
+            permit_validity_to,
+            insurance_validity_from,
+            insurance_validity_to
         }
         console.log(data);
         axios.post(`${process.env.REACT_APP_API}/admin/car/add/${isAuthenticated()?.admin?._id}`,{
@@ -91,6 +99,7 @@ function AddCarForm() {
                     reg_number:"",
                     type:"",
                     image:"",
+                    make_model:"",
                     permit_validity:"",
                     insurance_validity:"",
                     button:'ADD',
@@ -173,6 +182,19 @@ function AddCarForm() {
           {Redirecting()}
           <form className='form' onSubmit={signup}>
               <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>ADD CAR</h2>
+              <label>Select Location <span style={{color:'red'}}>*</span></label>
+              <select value={location} onChange={(e) => {
+                  setValues((state) =>({
+                      ...state,
+                      location:e.target.value
+                  }));
+              }} className="form-select">
+                  {
+                    locations.map((loc) => (
+                        <option key={loc._id} value={loc._id}>{loc.name}</option>
+                    ))
+                  }
+              </select>
               <label>Registration Number <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="reg_number" value={reg_number} className='form-input' type="text" placeholder='Enter Vehical Registration Number' required />
               <label>Select Car Type <span style={{color:'red'}}>*</span></label>
@@ -188,21 +210,7 @@ function AddCarForm() {
                     ))
                   }
               </select>
-              <label>Select Location <span style={{color:'red'}}>*</span></label>
-              <select value={location} onChange={(e) => {
-                  setValues((state) =>({
-                      ...state,
-                      location:e.target.value
-                  }));
-              }} className="form-select">
-                  {
-                    locations.map((loc) => (
-                        <option key={loc._id} value={loc._id}>{loc.name}</option>
-                    ))
-                  }
-                  {/* <option value="prime">Prime</option>
-                  <option value="standard">Standard</option> */}
-              </select>
+              
               <label style={{marginLeft:'2%'}} className='upload-image' htmlFor='car-image'>Upload Car Image </label>
               <input id="car-image" style={{display:'none'}} type="file" accept="image/*" className='form-input' />
               {/* <Autocomplete
@@ -211,14 +219,79 @@ function AddCarForm() {
                     console.log(place);
                 }}
                 /> */}
-              <label>Enter Number of Cars Available <span style={{color:'red'}}>*</span></label>
-              <input onChange={onchangeHandler} name="count" value={count} className='form-input' type="text" placeholder='Enter Cars Count' required />
-              <label>Enter Tarrif <span style={{color:'red'}}>*</span></label>
-              <input onChange={onchangeHandler} name="tarrif" value={tarrif} className='form-input' type="text" placeholder='Enter Tarrif' required />
-              <label>Permit Validity <span style={{color:'red'}}>*</span></label>
-              <input onChange={onchangeHandler} name="permit_validity" value={permit_validity} style={{width:'95%', alignSelf:'center'}} className='form-input' type="date" placeholder='Permit Validity' required />
-              <label>Insurance Validity <span style={{color:'red'}}>*</span></label>
-              <input onChange={onchangeHandler} name="insurance_validity" value={insurance_validity} style={{width:'95%', alignSelf:'center'}} className='form-input' type="date" placeholder='Insurance Validity' required />
+              <label>Make & Model <span style={{color:'red'}}>*</span></label>
+              <input onChange={onchangeHandler} name="make_model" value={make_model} className='form-input' type="text" placeholder='Enter Make and Model' required />
+              <br/>
+              <div style={{width:'50%', marginLeft:'3%'}}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Stack spacing={3}>
+              <DesktopDatePicker
+                label="Permit Validity from"
+                inputFormat="MM/dd/yyyy"
+                value={permit_validity_from}
+                onChange={(e) => {
+                    if(e){
+                        setValues((prevState) => ({
+                            ...prevState,
+                            permit_validity_from:e
+                        }))
+                    }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                <DesktopDatePicker
+                label="Permit Validity to"
+                inputFormat="MM/dd/yyyy"
+                value={permit_validity_to}
+                onChange={(e) => {
+                    if(e){
+                        setValues((prevState) => ({
+                            ...prevState,
+                            permit_validity_to:e
+                        }))
+                    }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                </Stack>
+                </LocalizationProvider>
+              </div>
+              <br/>
+              <div style={{width:'50%', marginLeft:'3%'}}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Stack spacing={3}>
+              <DesktopDatePicker
+                label="Insurance Validity from"
+                inputFormat="MM/dd/yyyy"
+                value={insurance_validity_from}
+                onChange={(e) => {
+                    if(e){
+                        setValues((prevState) => ({
+                            ...prevState,
+                            insurance_validity_from:e
+                        }))
+                    }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                <DesktopDatePicker
+                label="Insurance Validity to"
+                inputFormat="MM/dd/yyyy"
+                value={insurance_validity_to}
+                onChange={(e) => {
+                    if(e){
+                        setValues((prevState) => ({
+                            ...prevState,
+                            insurance_validity_to:e
+                        }))
+                    }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+                />
+                </Stack>
+                </LocalizationProvider>
+              </div>
+              {/* <input onChange={onchangeHandler} name="insurance_validity" value={insurance_validity} style={{width:'95%', alignSelf:'center'}} className='form-input' type="date" placeholder='Insurance Validity' required /> */}
               {showMessage()}
               <button className='submit' type='submit' disabled={loading}>{button}</button>
           </form>

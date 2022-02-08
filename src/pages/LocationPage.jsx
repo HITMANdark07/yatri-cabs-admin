@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Header from "../components/Header";
 import LocationForm from "../components/LocationForm";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import axios from "axios";
+import LocationList from "../components/LocationList";
 
 const LocationPage  = () => {
 
@@ -31,10 +31,7 @@ const LocationPage  = () => {
         <div className="location-container">
             {
                 locations.map((loc) => (
-                    <div key={loc._id} className="location-box">
-                        <LocationOnIcon />
-                        <div className="location-font">{loc.name}</div>
-                    </div>
+                    <LocationList key={loc._id} location={loc} />
                 ))
             }
         </div>

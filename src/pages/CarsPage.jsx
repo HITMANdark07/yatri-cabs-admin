@@ -64,12 +64,11 @@ function CarsPage({history}) {
         <TableHead>
           <TableRow>
             <StyledTableCell>Registration number</StyledTableCell>
+            <StyledTableCell align="right">Make & Model</StyledTableCell>
             <StyledTableCell align="right">Location</StyledTableCell>
             <StyledTableCell align="right">Model</StyledTableCell>
             <StyledTableCell align="right">Insurance validity</StyledTableCell>
             <StyledTableCell align="right">Permit Validity</StyledTableCell>
-            <StyledTableCell align="right">count</StyledTableCell>
-            <StyledTableCell align="right">tarrif</StyledTableCell>
             <StyledTableCell align="right">edit</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -79,12 +78,11 @@ function CarsPage({history}) {
               <StyledTableCell component="th" scope="row">
                 {car.reg_number}
               </StyledTableCell>
+              <StyledTableCell align="right">{car?.make_model}</StyledTableCell>
               <StyledTableCell align="right">{car?.location?.name}</StyledTableCell>
               <StyledTableCell align="right">{car?.type?.title}</StyledTableCell>
-              <StyledTableCell align="right">{moment(car?.insurance_validity).format('DD MMM YYYY')}</StyledTableCell>
-              <StyledTableCell align="right">{moment(car?.permit_validity).format('DD MMM YYYY')}</StyledTableCell>
-              <StyledTableCell align="right">{car?.count}</StyledTableCell>
-              <StyledTableCell align="right">{car?.tarrif}</StyledTableCell>
+              <StyledTableCell align="right">{moment(car?.insurance_validity_from).format('DD MMM YYYY')} - {moment(car?.insurance_validity_to).format('DD MMM YYYY')}</StyledTableCell>
+              <StyledTableCell align="right">{moment(car?.permit_validity_from).format('DD MMM YYYY')} - {moment(car?.permit_validity_to).format('DD MMM YYYY')}</StyledTableCell>
               <StyledTableCell align="right">
                 <IconButton onClick={() => {
                   history.push(`/update/car/${car?._id}`)

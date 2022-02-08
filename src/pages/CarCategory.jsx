@@ -63,7 +63,6 @@ function CarsPage({history}) {
         <TableHead>
           <TableRow>
             <StyledTableCell>Category Title</StyledTableCell>
-            <StyledTableCell align="right">Type</StyledTableCell>
             <StyledTableCell align="right">Seats</StyledTableCell>
             <StyledTableCell align="right">Luggage</StyledTableCell>
             <StyledTableCell align="right">AC Availablity</StyledTableCell>
@@ -77,7 +76,6 @@ function CarsPage({history}) {
               <StyledTableCell component="th" scope="row">
                 {category.title}
               </StyledTableCell>
-              <StyledTableCell align="right">{category?.type}</StyledTableCell>
               <StyledTableCell align="right">{category?.seats}</StyledTableCell>
               <StyledTableCell align="right">{category?.luggage}</StyledTableCell>
               <StyledTableCell align="right">{category?.ac ? "Available" : "Not Available"}</StyledTableCell>
