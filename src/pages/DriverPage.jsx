@@ -8,13 +8,14 @@ import makeToast from "../Toaster";
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import EditIcon from '@mui/icons-material/Edit';
-// import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton } from '@mui/material';
 import axios from 'axios';
 import { isAuthenticated } from '../auth';
 
@@ -39,6 +40,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
+
+
 const DriverPage = ({history}) => {
 
     const [drivers, setDrivers] = useState([]);
@@ -54,6 +57,23 @@ const DriverPage = ({history}) => {
             setDrivers(res.data);
         }).catch((err ) => {
             console.log(err.response.data.error);
+        })
+    }
+
+    function deleteDriver(id){
+        axios({
+          method:'DELETE',
+          url:`${process.env.REACT_APP_API}/driver/delete/${id}/${isAuthenticated()?.admin?._id}`,
+          headers:{
+            Authorization:`Bearer ${isAuthenticated()?.token}`
+          }
+        }).then((res) => {
+          makeToast("success", res.data.message);
+          console.log(res.data);
+          init();
+        }).catch((err) => {
+          console.log(err);
+          alert("SOMETHING WENT WRONG");
         })
     }
 
@@ -91,6 +111,7 @@ const DriverPage = ({history}) => {
             <TableRow>
                 <StyledTableCell align='left'>Avatar</StyledTableCell>
                 <StyledTableCell>Driver Name</StyledTableCell>
+                <StyledTableCell align="right">username</StyledTableCell>
                 <StyledTableCell align="right">status</StyledTableCell>
                 <StyledTableCell align="right">Contact</StyledTableCell>
                 <StyledTableCell align="right">Location</StyledTableCell>
@@ -98,6 +119,7 @@ const DriverPage = ({history}) => {
                 <StyledTableCell align="right">Aadhar</StyledTableCell>
                 {/* <StyledTableCell align="right">luggage</StyledTableCell> */}
                 <StyledTableCell align="right">edit</StyledTableCell>
+                <StyledTableCell align="right">delete</StyledTableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -110,6 +132,9 @@ const DriverPage = ({history}) => {
                     {driver.name}
                 </StyledTableCell>
                 <StyledTableCell align="right">
+                    {driver.username}
+                </StyledTableCell>
+                <StyledTableCell align="right">
                     <Switch onClick={() => {
                         updateStatus(driver?._id,driver?.status);
                     }} checked={driver?.status===1 ? true : false} />
@@ -120,11 +145,16 @@ const DriverPage = ({history}) => {
                 <StyledTableCell align="right">{driver?.aadhar_number}</StyledTableCell>
                 {/* <StyledTableCell align="right">{}</StyledTableCell> */}
                 <StyledTableCell align="right">
-                    {/* <IconButton onClick={() => {
-                    history.push(`/update/driver/${driver?._id}`)
+                    <IconButton onClick={() => {
+                        history.push(`/update/driver/${driver?._id}`);
                     }}>
-                    <EditIcon color='"primary' />
-                    </IconButton> */}
+                    <EditIcon color='primary' />
+                    </IconButton>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                    <IconButton onClick={() => deleteDriver(driver?._id)}>
+                    <DeleteForeverIcon color='secondary' />
+                    </IconButton>
                 </StyledTableCell>
                 </StyledTableRow>
             ))}

@@ -5,7 +5,7 @@ import "../App.css";
 import { isAuthenticated } from '../auth';
 import makeToast from '../Toaster';
 
-function AddCategoryForm() {
+function UpdateDriverForm({driverId}) {
     const [locations, setLocations] = useState([]);
     const [values, setValues] = useState({
         name:"",
@@ -21,7 +21,7 @@ function AddCategoryForm() {
         loading:false,
         redirect:false,
         status:"",
-        button:'ADD'
+        button:'UPDATE'
     });
     const getLocs =() => {
         axios({
@@ -29,25 +29,50 @@ function AddCategoryForm() {
             url:`${process.env.REACT_APP_API}/location/list`,
         }).then((res) => {
             setLocations(res.data);
-            setValues((state) => ({
-                ...state,
-                location:res?.data[0]?._id
-            }))
+            // setValues((state) => ({
+            //     ...state,
+            //     location:res?.data[0]?._id
+            // }))
         }).catch((err) => {
             console.log(err.response?.data?.error);
             alert("SOMETHING WENT WRONG");
         })
     };
+
+    const getDriver = React.useCallback(() => {
+        axios({
+            method:'GET',
+            url:`${process.env.REACT_APP_API}/driver/detail/${driverId}`,
+        }).then((res) => {
+            console.log(res.data);
+            let d = res.data;
+            setValues((state) => ({
+                ...state,
+                location:d.location,
+                name:d.name,
+                phone:d.phone,
+                image:d.image,
+                aadhar_number:d.aadhar_number,
+                dl_number:d.dl_number,
+                username:d.username,
+                showImage:`${process.env.REACT_APP_API}/image/photo/${d.image}`
+            }))
+        }).catch((err) => {
+            console.log(err);
+            alert("SOMETHING WENT WRONG");
+        })
+    },[driverId])
     React.useEffect(() => {
         getLocs();
-    },[])
+        getDriver();
+    },[getDriver])
     const {message, name, phone,aadhar_number,dl_number,location,username,password,image, status,loading,showImage,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
             ...state,
             loading:true,
-            button:'ADDING...',
+            button:'UPDATING...',
         }))
         const data ={
             name:name,
@@ -59,15 +84,19 @@ function AddCategoryForm() {
             dl_number:dl_number,
             image:image
         }
+        if(password===""){
+            delete data.password;
+        }
 
         axios({
-            method:'POST',
-            url:`${process.env.REACT_APP_API}/driver/register/${isAuthenticated()?.admin?._id}`,
+            method:'PUT',
+            url:`${process.env.REACT_APP_API}/driver/update/${driverId}/${isAuthenticated()?.admin?._id}`,
             data:data,
             headers:{
                 Authorization:`Bearer ${isAuthenticated()?.token}`
             }
         }).then((res) => {
+            console.log(res.data);
             if(res?.data){
                 setValues((state) => ({
                     ...state,
@@ -158,7 +187,7 @@ function AddCategoryForm() {
       <div className='form-container'>
           {Redirecting()}
           <form className='form' onSubmit={signup}>
-              <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>ADD DRIVER</h2>
+              <h2 style={{textAlign:'left', marginLeft:'5%', fontWeight:'350', letterSpacing:'5px'}}>UPDATE DRIVER</h2>
               <label>Select Location <span style={{color:'red'}}>*</span></label>
               <select value={location} onChange={(e) => {
                   setValues((state) =>({
@@ -226,8 +255,9 @@ function AddCategoryForm() {
               <input onChange={onchangeHandler} name="username" value={username} className='form-input' type="text" placeholder='Enter Username' required />
               
               
-              <label>Password <span style={{color:'red'}}>*</span></label>
-              <input onChange={onchangeHandler} name="password" value={password} className='form-input' type="password" placeholder='Password' required />
+              {/* <label>New Password </label>
+              <input onChange={onchangeHandler} name="password" value={password} className='form-input' type="password" placeholder='Password' />
+               */}
               <label>Driving Licence Number <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="dl_number" value={dl_number} className='form-input' type="text" placeholder='Enter Driving Licence Number' required />
               <label>Aadhar Number <span style={{color:'red'}}>*</span></label>
@@ -239,4 +269,4 @@ function AddCategoryForm() {
   </div>;
 }
 
-export default withRouter(AddCategoryForm);
+export default withRouter(UpdateDriverForm);
