@@ -15,6 +15,9 @@ import AddDriverPage from './pages/AddDriverPage';
 import LocationPage from './pages/LocationPage';
 import UsersPage from './pages/UsersPage';
 import UpdateDriverPage from './pages/UpdateDriverPage';
+import TariffPage from './pages/TariffPage';
+import AddTariff from './pages/AddTariff';
+import UpdateTariffPage from './pages/UpdateTariffPage';
 
 function App() {
   return ( 
@@ -33,6 +36,9 @@ function App() {
         <PrivateRoute path="/add-driver" exact component={AddDriverPage} />
         <PrivateRoute path="/update/driver/:driverId" exact component={UpdateDriverPage} />
         <PrivateRoute path="/users" exact component={UsersPage} />
+        <PrivateRoute path="/tariff" exact component={TariffPage} />
+        <PrivateRoute path="/add-tariff" exact component={AddTariff} />
+        <PrivateRoute path="/update/tariff/:tariffId" exact component={UpdateTariffPage} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>

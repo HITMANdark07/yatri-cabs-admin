@@ -16,7 +16,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import makeToast from '../Toaster';
-import moment from 'moment';
+// import moment from 'moment';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -46,16 +46,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-function CarsPage({history}) {
+function TariffPage({history}) {
   const [cars, setCars] = useState([]);
   const [location, setLocation] = useState("");
-  const [searchTerm, setSearchTerm ] = useState("");
   const [locations, setLocations] = useState([]);
   const [filterdCars, setFilteredCars] = useState([]);
   const init =() => {
     axios({
       method:'GET',
-      url:`${process.env.REACT_APP_API}/car/list`,
+      url:`${process.env.REACT_APP_API}/tariff/list`,
     }).then((res) => {
       setCars(res.data);
       setFilteredCars(res.data);
@@ -68,12 +67,12 @@ function CarsPage({history}) {
  function deleteCar(id){
     axios({
       method:'DELETE',
-      url:`${process.env.REACT_APP_API}/admin/car/delete/${id}/${isAuthenticated()?.admin?._id}`,
+      url:`${process.env.REACT_APP_API}/admin/tariff/delete/${id}/${isAuthenticated()?.admin?._id}`,
       headers:{
         Authorization:`Bearer ${isAuthenticated()?.token}`
       }
     }).then((res) => {
-      makeToast("success", res.data.make_model+" deleted !");
+      makeToast("success", res.data.trip_type+" Tariff deleted !");
       console.log(res.data);
       init();
     }).catch((err) => {
@@ -105,12 +104,10 @@ function CarsPage({history}) {
       <Header />
       <div className='main-container'>
           <div style={{display:'flex', flexDirection:'row'}}>
-          <TextField label="SEARCH HERE..."
-            onChange={(e) =>{
+          <TextField label="SEARCH HERE..." onChange={(e) =>{
             let name = e.target.value;
-            setSearchTerm(name)
-            // let c = cars.filter((car) => car.make_model.toLowerCase().includes(name.toLowerCase()));
-            // setFilteredCars(c);
+            let c = cars.filter((car) => car.make_model.toLowerCase().includes(name.toLowerCase()) && location==="" ? true : car.location._id===location);
+            setFilteredCars(c);
           }} variant="standard" sx={{minWidth:400}}  />
 
             <Box sx={{ minWidth: 220, marginLeft:5 }}>
@@ -129,7 +126,6 @@ function CarsPage({history}) {
                     }else{
                       setFilteredCars(c);
                     }
-                    
                   }}
                 >
                   <MenuItem value="">ALL LOCATIONS</MenuItem>
@@ -142,36 +138,40 @@ function CarsPage({history}) {
             </Box>
           </div>
 
-          <button className='add-new-car-button' onClick={() => { history.push("/add-cars")}}><AddCircleOutlineIcon sx={{marginRight:1}}  /> ADD NEW CAR </button>
+          <button className='add-new-car-button' onClick={() => { history.push("/add-tariff")}}><AddCircleOutlineIcon sx={{marginRight:1}}  /> ADD NEW TARIFF </button>
       </div>
       <TableContainer component={Paper} sx={{maxWidth:'90%', marginLeft:'5%'}}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Registration number</StyledTableCell>
-            <StyledTableCell align="right">Make & Model</StyledTableCell>
+            <StyledTableCell>category</StyledTableCell>
+            <StyledTableCell align="right">Trip Type</StyledTableCell>
             <StyledTableCell align="right">Location</StyledTableCell>
-            <StyledTableCell align="right">Model</StyledTableCell>
-            <StyledTableCell align="right">Insurance validity</StyledTableCell>
-            <StyledTableCell align="right">Permit Validity</StyledTableCell>
+            <StyledTableCell align="right">Base Fare</StyledTableCell>
+            <StyledTableCell align="right">Extra KM Charge</StyledTableCell>
+            <StyledTableCell align="right">Extra Hour Charge</StyledTableCell>
+            <StyledTableCell align="right">Driver Allowance</StyledTableCell>
+            <StyledTableCell align="right">GST</StyledTableCell>
             <StyledTableCell align="right">edit</StyledTableCell>
             <StyledTableCell align="right">delete</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {filterdCars.filter((fc) =>  fc.make_model.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
+          {filterdCars.map((car) => (
             <StyledTableRow key={car._id}>
               <StyledTableCell component="th" scope="row">
-                {car.reg_number}
+                {car?.category?.title}
               </StyledTableCell>
-              <StyledTableCell align="right">{car?.make_model}</StyledTableCell>
+              <StyledTableCell align="right">{car?.trip_type} ({car?.sub_trip_type})</StyledTableCell>
               <StyledTableCell align="right">{car?.location?.name}</StyledTableCell>
-              <StyledTableCell align="right">{car?.type?.title}</StyledTableCell>
-              <StyledTableCell align="right">{moment(car?.insurance_validity_from).format('DD MMM YYYY')} - {moment(car?.insurance_validity_to).format('DD MMM YYYY')}</StyledTableCell>
-              <StyledTableCell align="right">{moment(car?.permit_validity_from).format('DD MMM YYYY')} - {moment(car?.permit_validity_to).format('DD MMM YYYY')}</StyledTableCell>
+              <StyledTableCell align="right">₹{car?.min_fare}/-</StyledTableCell>
+              <StyledTableCell align="right">₹{car?.extra_km}/Km</StyledTableCell>
+              <StyledTableCell align="right">₹{car?.extra_hours}/Hr</StyledTableCell>
+              <StyledTableCell align="right">₹{car?.driver_allowance}/-</StyledTableCell>
+              <StyledTableCell align="right">{car?.gst}%</StyledTableCell>
               <StyledTableCell align="right">
                 <IconButton onClick={() => {
-                  history.push(`/update/car/${car?._id}`)
+                  history.push(`/update/tariff/${car?._id}`)
                 }}>
                   <EditIcon color="primary" />
                 </IconButton>
@@ -196,4 +196,4 @@ function CarsPage({history}) {
   </div>;
 }
 
-export default withRouter(CarsPage);
+export default withRouter(TariffPage);

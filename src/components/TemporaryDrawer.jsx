@@ -96,6 +96,15 @@ function TemporaryDrawer({showDrawer, toggleDrawer, history}) {
                   <ListItemText primary="Driver" secondary="Manage Drivers" />
                 </ListItem>
 
+                <ListItem button onClick={() => {
+                  history.push("/tariff")
+                }}>
+                  <ListItemIcon>
+                    <CategoryIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Tariff" secondary="Manage Tariffs" />
+                </ListItem>
+
             </List>
 
             <Divider />
