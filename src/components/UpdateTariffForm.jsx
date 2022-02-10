@@ -229,7 +229,7 @@ function UpdateTariffForm({tariffId}) {
                   let sub="8HRS/80KM"
                   if(e.target.value==="LOCAL") sub="8HRS/80KM";
                   if(e.target.value==="OUTSTATION") sub="ONEWAY";
-                  if(e.target.value==="AIR_TRANSPORT") sub="CAB_FROM_AIRPORT";
+                  if(e.target.value==="AIRPORT") sub="CAB_FROM_AIRPORT";
                   setValues((state) => ({
                       ...state,
                       trip_type:e.target.value,
@@ -238,7 +238,7 @@ function UpdateTariffForm({tariffId}) {
               }} value={trip_type} className="form-select">
                         <option value="LOCAL">LOCAL</option>
                         <option value="OUTSTATION">OUTSTATION</option>
-                        <option value="AIR_TRANSPORT">AIR TRANSPORT</option>
+                        <option value="AIRPORT">AIR TRANSPORT</option>
               </select>
 
               {trip_type!=="" && 
@@ -265,7 +265,7 @@ function UpdateTariffForm({tariffId}) {
                         </>
                         }
                         {
-                          trip_type==="AIR_TRANSPORT" && 
+                          trip_type==="AIRPORT" && 
                           <>
                           <option value="CAB_FROM_AIRPORT">CAB FROM AIRPORT</option>
                           <option value="CAB_TO_AIRPORT">CAB TO AIRPORT</option>
