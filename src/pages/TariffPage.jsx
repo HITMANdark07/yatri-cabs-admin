@@ -260,7 +260,7 @@ function TariffPage({history}) {
       </Table>
     </TableContainer>
       )
-    }else{
+    }else if(loading){
       return (
         <Box sx={{ width: '90%', marginLeft:'5%' }}>
           <Skeleton height={60} />
@@ -270,6 +270,12 @@ function TariffPage({history}) {
           <Skeleton animation="wave" height={60} />
           <Skeleton animation={false} height={60} />
         </Box>
+      )
+    }else{
+      return (
+        <div style={{width: '90%', marginLeft:'5%', textAlign:'center'}}>
+          <h2 style={{fontWeight:'400', letterSpacing:5}}>"0" Results Found</h2>
+        </div>
       )
     }
   }
