@@ -14,6 +14,9 @@ function UpdateTariffForm({tariffId}) {
         location:"",
         min_fare:"",
         extra_km:"",
+        per_km:"",
+        min_km_per_day:"",
+        driver_allowance_day:"",
         extra_hours:"",
         driver_allowance:"",
         gst:"",
@@ -40,6 +43,9 @@ function UpdateTariffForm({tariffId}) {
                     category:d.category?._id,
                     trip_type:d.trip_type,
                     sub_trip_type:d.sub_trip_type,
+                    per_km:d.per_km,
+                    driver_allowance_day:d.driver_allowance_day,
+                    min_km_per_day:d.min_km_per_day,
                     min_fare:d.min_fare,
                     extra_km:d.extra_km,
                     extra_hours:d.extra_hours,
@@ -88,7 +94,7 @@ function UpdateTariffForm({tariffId}) {
         getLocs();
         getTariffDetails();
     },[getTariffDetails]);
-    const {message, location,category, trip_type, sub_trip_type,min_fare,extra_km,extra_hours,driver_allowance,gst, status,loading,button, redirect} = values;
+    const {message, location,category,per_km, trip_type,driver_allowance_day,min_km_per_day, sub_trip_type,min_fare,extra_km,extra_hours,driver_allowance,gst, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -102,6 +108,9 @@ function UpdateTariffForm({tariffId}) {
             min_fare,
             trip_type,
             sub_trip_type,
+            per_km,
+            driver_allowance_day,
+            min_km_per_day,
             extra_hours,
             extra_km,
             driver_allowance,
@@ -232,6 +241,9 @@ function UpdateTariffForm({tariffId}) {
                   if(e.target.value==="AIRPORT") sub="CAB_FROM_AIRPORT";
                   setValues((state) => ({
                       ...state,
+                      per_km:e.target.value!=="OUTSTATION" ? "" : state.per_km,
+                      extra_hours:e.target.value!=="LOCAL" ? 0: state.extra_hours,
+                      min_fare: e.target.value==="OUTSTATION" ? 0 : state.min_fare,
                       trip_type:e.target.value,
                       sub_trip_type:sub
                   }))
@@ -274,14 +286,39 @@ function UpdateTariffForm({tariffId}) {
               </select>
               </>}
               
-              <label>Base Fare <span style={{color:'red'}}>*</span></label>
-              <input onChange={onchangeHandler} name="min_fare" value={min_fare} className='form-input' type="number" placeholder='Enter Base Fare' />
+              {
+                  trip_type!=="OUTSTATION" ?
+                  <>
+                  <label>Base Fare <span style={{color:'red'}}>*</span></label>
+                  <input onChange={onchangeHandler} name="min_fare" value={min_fare} className='form-input' type="number" placeholder='Enter Base Fare' />
+                  <label>Extra KM Charge </label>
+                  <input onChange={onchangeHandler} name="extra_km" value={extra_km} className='form-input' type="number" placeholder='Enter Extra KM Charge' />
+                  </>
+                  :
+                  <>
+                  <label>Per KM Charge <span style={{color:'red'}}>*</span></label>
+                  <input onChange={onchangeHandler} name="per_km" value={per_km} className='form-input' type="number" placeholder='Per KM Charge' />
+                  </>
+              }
               
-              <label>Extra KM Charge </label>
-              <input onChange={onchangeHandler} name="extra_km" value={extra_km} className='form-input' type="number" placeholder='Enter Extra KM Charge' />
-              
-              <label>Extra Hours Charge </label>
-              <input onChange={onchangeHandler} name="extra_hours" value={extra_hours} className='form-input' type="number" placeholder='Enter Extra Hours Charge' />
+              {
+                  trip_type==="LOCAL" &&
+                  <>
+                  <label>Extra Hours Charge </label>
+                  <input onChange={onchangeHandler} name="extra_hours" value={extra_hours} className='form-input' type="number" placeholder='Enter Extra Hours Charge' />
+                  </>
+              }
+
+              {
+                  sub_trip_type==="ROUND_TRIP" &&
+                  <>
+                  <label>Minimun KM Per Day </label>
+                  <input onChange={onchangeHandler} name="min_km_per_day" value={min_km_per_day} className='form-input' type="number" placeholder='Minimun KM Per Day' />
+                  <label>Driver Day Allowance </label>
+                  <input onChange={onchangeHandler} name="driver_allowance_day" value={driver_allowance_day} className='form-input' type="number" placeholder='Enter Driver Per Day Allowance' />
+                  </>
+
+              }
               
               <label>Driver Night Allowance </label>
               <input onChange={onchangeHandler} name="driver_allowance" value={driver_allowance} className='form-input' type="number" placeholder='Enter Driver night Allowance' />
