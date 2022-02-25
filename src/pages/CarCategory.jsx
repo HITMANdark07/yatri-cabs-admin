@@ -11,10 +11,13 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 // import moment from 'moment';
 import { IconButton } from '@mui/material';
+import { isAuthenticated } from '../auth';
+import makeToast from '../Toaster';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,6 +53,21 @@ function CarsPage({history}) {
     })
   }
 
+  function deleteCat (id){
+    axios({
+      method:'DELETE',
+      url: `${process.env.REACT_APP_API}/admin/category/delete/${id}/${isAuthenticated()?.admin_id}`,
+      headers:{
+        Authorization:`Bearer ${isAuthenticated()?.token}`
+      }
+    }).then((response) => {
+      makeToast("success",response.data.title+" deleted !");
+      init();
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
   useEffect(() => {
     init();
   },[]);
@@ -68,6 +86,7 @@ function CarsPage({history}) {
             <StyledTableCell align="right">AC Availablity</StyledTableCell>
             <StyledTableCell align="right">luggage</StyledTableCell>
             <StyledTableCell align="right">edit</StyledTableCell>
+            <StyledTableCell align="right">delete</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -85,6 +104,13 @@ function CarsPage({history}) {
                   history.push(`/update/category/${category?._id}`)
                 }}>
                   <EditIcon color='"primary' />
+                </IconButton>
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <IconButton onClick={() => {
+                  deleteCat(category?._id);
+                }}>
+                  <DeleteForeverIcon color='secondary' />
                 </IconButton>
               </StyledTableCell>
             </StyledTableRow>
