@@ -93,7 +93,7 @@ function TariffPage({history}) {
  const getLocs =() => {
   axios({
       method:"GET",
-      url:`${process.env.REACT_APP_API}/location/list`,
+      url:`${process.env.REACT_APP_API}/location/list?status=true`,
   }).then((res) => {
       setLocations(res.data);
   }).catch((err) => {
