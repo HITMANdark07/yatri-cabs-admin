@@ -51,6 +51,16 @@ function TemporaryDrawer({showDrawer, toggleDrawer, history}) {
                   </ListItemIcon>
                   <ListItemText primary="Home" secondary="Dashboard" />
                 </ListItem>
+
+                <ListItem button onClick={() => {
+                  history.push("/trips")
+                }}>
+                  <ListItemIcon>
+                    <CategoryIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Trips" secondary="Manage Trips" />
+                </ListItem>
+
                 <ListItem button onClick={() => {
                   history.push("/category")
                 }}>

@@ -18,6 +18,7 @@ import UpdateDriverPage from './pages/UpdateDriverPage';
 import TariffPage from './pages/TariffPage';
 import AddTariff from './pages/AddTariff';
 import UpdateTariffPage from './pages/UpdateTariffPage';
+import TripsPage from './pages/TripsPage';
 
 function App() {
   return ( 
@@ -39,6 +40,7 @@ function App() {
         <PrivateRoute path="/tariff" exact component={TariffPage} />
         <PrivateRoute path="/add-tariff" exact component={AddTariff} />
         <PrivateRoute path="/update/tariff/:tariffId" exact component={UpdateTariffPage} />
+        <PrivateRoute path="/trips" exact component={TripsPage} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>
