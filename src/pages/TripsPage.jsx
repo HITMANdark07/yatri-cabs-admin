@@ -17,6 +17,7 @@ import Paper from '@mui/material/Paper';
 // import EditIcon from '@mui/icons-material/Edit';
 // import makeToast from '../Toaster';
 // import moment from 'moment';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import moment from 'moment';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -25,12 +26,30 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-
+import ModelComp from '../components/Model';
 import Select from '@mui/material/Select';
 import Skeleton from '@mui/material/Skeleton';
 import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import CancelIcon from '@mui/icons-material/Cancel';
+import LoadingButton from '@mui/lab/LoadingButton';
 // import { isAuthenticated } from '../auth';
+import makeToast from '../Toaster';
+import CheckIcon from '@mui/icons-material/Check';
+import { compose, withProps } from "recompose";
+import {
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
+  Marker
+} from "react-google-maps";
 import { useCallback } from 'react';
+import { isAuthenticated } from '../auth';
+
+const st = ['UNPAID','PARTIAL','PAID','REFUNDED'];
+const clr = ["red","yellow","green","grey"];
+const s = ["PENDING","CONFIRMED","LIVE", "COMPLETED","CANCELED"];
+const sclr = ["yellow","greenyellow","green","grey","red"];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,6 +72,228 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
+const MyMapComponent = compose(
+  withProps({
+    /**
+     * Note: create and replace your own key in the Google console.
+     * https://console.developers.google.com/apis/dashboard
+     * The key "AIzaSyBkNaAGLEVq0YLQMi-PYEMabFeREadYe1Q" can be ONLY used in this sandbox (no forked).
+     */
+    // lat:-34.397,
+    // lng:150.644,
+    googleMapURL:
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyATzOQBhRyutho2AlgGTQnsybhNOkuACzI&v=3.exp&libraries=geometry,drawing,places",
+    loadingElement: <div style={{ height: `200px` }} />,
+    containerElement: <div style={{ height: `200px` }} />,
+    mapElement: <div style={{ height: `200px` }} />
+  }),
+  withScriptjs,
+  withGoogleMap
+)(props => (
+  <GoogleMap defaultZoom={18} defaultCenter={{ lat: props.lat, lng: props.lng }}>
+    {props.isMarkerShown && (
+      <Marker position={{ lat: props.lat, lng: props.lng }} />
+    )}
+  </GoogleMap>
+));
+function TableDataList({trip,history,fetchTrips}) {
+  const [show, setShow] = useState(false);
+  const [drivers, setDrivers] = useState([]);
+  const [driver, setDriver] = useState("");
+  const [cars, setCars] = useState([]);
+  const [car, setCar] = useState("");
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [ig, setIg] = useState("");
+  const toggleShow = () => {
+    setShow((state) => !state);
+  }
+
+  const assignDriver = () => {
+    setLoading1(true);
+    axios({
+      method:'PUT',
+      url:`${process.env.REACT_APP_API}/trip/update/${trip._id}/${isAuthenticated()?.admin?._id}`,
+      headers:{
+        Authorization:`Bearer ${isAuthenticated()?.token}`
+      },
+      data:{
+        status:'CONFIRMED',
+        driver:driver
+      }
+    }).then((response) => {
+      if(response?.data?._id){
+        makeToast("success","Successfully Assigned");
+        fetchTrips();
+        setShow(false);
+      }
+      setLoading1(false);
+    }).catch((err) => {
+      makeToast("error", err?.response?.data?.error);
+      setLoading1(false);
+    })
+  }
+
+  const cancelTrip = () => {
+    setLoading2(true);
+    axios({
+      method:'PUT',
+      url:`${process.env.REACT_APP_API}/trip/update/${trip._id}/${isAuthenticated()?.admin?._id}`,
+      headers:{
+        Authorization:`Bearer ${isAuthenticated()?.token}`
+      },
+      data:{
+        status:'CANCELED'
+      }
+    }).then((response) => {
+      if(response?.data?._id){
+        makeToast("success","Successfully Canceled");
+        fetchTrips();
+        setShow(false);
+      }
+      setLoading2(false);
+    }).catch((err) => {
+      makeToast("error", err?.response?.data?.error);
+      setLoading2(false);
+    })
+  }
+
+  const init = React.useCallback(() => {
+    axios({
+      method:'GET',
+      url:`${process.env.REACT_APP_API}/driver/list/${isAuthenticated()?.admin?._id}?status=1&location=${trip?.tariff?.location?._id}`,
+      headers:{
+        Authorization:`Bearer ${isAuthenticated().token}`
+      }
+    }).then((response) => {
+      setDrivers(response.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  },[trip])
+  React.useEffect(() => {
+    if(show){
+      init();
+    }
+  },[show, init])
+  return(
+    <StyledTableRow key={trip._id}>
+              <ModelComp open={show} setOpen={setShow}>
+              <>
+                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                  <Typography id="modal-modal-title" variant="h4" >
+                   Assign Driver
+                  </Typography>
+                  <IconButton onClick={() => setShow(false)}>
+                  <CloseIcon />
+                  </IconButton>
+                </div>
+                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                  <div style={{flex:1}}>
+                    <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                    {trip?.tariff?.location?.name}
+                    </Typography>
+                    {trip?.tariff?.trip_type==="OUTSTATION" && (
+                      <>
+                      <Typography id="modal-modal-description" variant='p' sx={{ mt: 2 }}>
+                      to
+                      </Typography>
+                      <Typography id="modal-modal-description" variant="h6" sx={{ mb: 2 }}>
+                      {trip?.destination?.name}
+                      </Typography>
+                      </>
+                    )}
+                  </div>
+
+                  {ig!==""  && <img src={`${process.env.REACT_APP_API}/image/photo/${ig}`} style={{width:'50%', aspectRatio:'1/1',margin:5, borderRadius:5}} alt={driver}  />}
+                </div>
+                <>
+                <FormControl fullWidth sx={{my:2}}>
+                  <InputLabel id="demo-simple-select-label" style={{marginLeft:'-1%'}}>Driver</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={driver}
+                    label="Age"
+                    onChange={(e) => {
+                      setDriver(e.target.value);
+                      const d = drivers.filter((f) => f._id===e.target.value);
+                      setIg(d[0]?.image);
+                    }}
+                  >
+                    
+                    {drivers.map((d) => {
+                      return <MenuItem value={d._id}>{d.name}</MenuItem>
+                    })}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth sx={{my:2}}>
+                  <InputLabel id="demo-simple-select-label" style={{marginLeft:'-1%'}}>Select Car</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={car}
+                    label="Select Car"
+                    onChange={(e) => {
+                      setCar(e.target.value);
+                      const d = car.filter((f) => f._id===e.target.value);
+                      setIg(d[0]?.image);
+                    }}
+                  >
+                    
+                    {drivers.map((d) => {
+                      return <MenuItem value={d._id}>{d.name}</MenuItem>
+                    })}
+                  </Select>
+                </FormControl>
+                <MyMapComponent isMarkerShown lat={trip?.start?.lat} lng={trip?.start?.lng} />
+                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                <LoadingButton variant='contained' loading={loading1} disabled={driver==="" || loading1} onClick={assignDriver} sx={{my:1}} startIcon={<CheckIcon />}>ASSIGN AND CONFIRM</LoadingButton>
+                <LoadingButton variant='contained' loading={loading2} onClick={cancelTrip} disabled={driver!=="" || loading2} color='secondary' sx={{my:1}} startIcon={<CancelIcon />}>CANCEL TRIP</LoadingButton>
+                </div>
+                </>
+              </>
+              </ModelComp>
+              <StyledTableCell component="th" scope="row">
+                {trip?.tariff?.location?.name}
+              </StyledTableCell>
+              <StyledTableCell align="right">{trip?.tariff?.trip_type} ({trip?.tariff?.sub_trip_type})</StyledTableCell>
+              <StyledTableCell align="right">
+              <div 
+              style={{backgroundColor: sclr[s.indexOf(trip?.status)], padding:5,borderRadius:2, fontWeight:'700'}}>
+              {trip?.status}
+              </div>
+              </StyledTableCell>
+              <StyledTableCell align="right">{moment(new Date(trip?.pick_date)).format("DD MMM YYYY")}</StyledTableCell>
+              <StyledTableCell align="right">{trip?.pick_time}</StyledTableCell>
+              <StyledTableCell align="right">
+              <div 
+              style={{backgroundColor: clr[st.indexOf(trip?.paymentStatus)], color:'white', padding:5,borderRadius:2, fontWeight:'500', alignItems:'center'}}>
+                  {trip?.paymentStatus}
+                  </div></StyledTableCell>
+              <StyledTableCell align="right">{trip?.contact}</StyledTableCell>
+              <StyledTableCell align="right">{trip?.client_name}</StyledTableCell>
+              <StyledTableCell align="right">
+                <IconButton onClick={toggleShow}>
+                  <VisibilityIcon color="primary" />
+                </IconButton>
+              </StyledTableCell>
+              {/* <StyledTableCell align="right">
+                <IconButton onClick={() => {
+                  history.push(`/update/tariff/${car?._id}`)
+                }}>
+                  <EditIcon color="primary" />
+                </IconButton>
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <IconButton onClick={() => deleteCar(car?._id)} >
+                  <DeleteForeverIcon color="secondary" />
+                </IconButton>
+              </StyledTableCell> */}
+    </StyledTableRow>
+  )
+}
+
 function TripsPage({history}) {
   const [trips, setTrips] = useState([]);
   const [location, setLocation] = useState("");
@@ -62,10 +303,7 @@ function TripsPage({history}) {
   const [loading, setLoading] = useState(true);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
-  const st = ['UNPAID','PARTIAL','PAID','REFUNDED'];
-  const clr = ["red","yellow","green","grey"];
-  const s = ["PENDING","CONFIRMED","LIVE", "COMPLETED","CANCELED"];
-  const sclr = ["yellow","greenyellow","green","grey","red"];
+
   const init = useCallback(() => {
     setLoading(true);
     axios({
@@ -125,7 +363,7 @@ function TripsPage({history}) {
 //   }
   // console.log(filterdCars);
 
-  const renderTable = (arr) => {
+  const RenderTable = ({arr,fetchTrips}) => {
     if(arr[0]?._id&& !loading){
       return (
         <TableContainer component={Paper} sx={{maxWidth:'90%', marginLeft:'5%'}}>
@@ -147,46 +385,7 @@ function TripsPage({history}) {
         </TableHead>
         <TableBody>
           {arr.map((trip) => (
-            <StyledTableRow key={trip._id}>
-              <StyledTableCell component="th" scope="row">
-                {trip?.tariff?.location?.name}
-              </StyledTableCell>
-              <StyledTableCell align="right">{trip?.tariff?.trip_type} ({trip?.tariff?.sub_trip_type})</StyledTableCell>
-              <StyledTableCell align="right">
-              <div 
-              style={{backgroundColor: sclr[s.indexOf(trip?.status)], padding:5,borderRadius:2, fontWeight:'700'}}>
-              {trip?.status}
-              </div>
-            </StyledTableCell>
-              <StyledTableCell align="right">{moment(new Date(trip?.pick_date)).format("DD MMM YYYY")}</StyledTableCell>
-              <StyledTableCell align="right">{trip?.pick_time}</StyledTableCell>
-              <StyledTableCell align="right">
-              <div 
-              style={{backgroundColor: clr[st.indexOf(trip?.paymentStatus)], color:'white', padding:5,borderRadius:2, fontWeight:'500', alignItems:'center'}}>
-                  {trip?.paymentStatus}
-                  </div></StyledTableCell>
-              <StyledTableCell align="right">{trip?.contact}</StyledTableCell>
-              <StyledTableCell align="right">{trip?.client_name}</StyledTableCell>
-              <StyledTableCell align="right">
-                <IconButton onClick={() => {
-                  history.push(`/update/trips/${trip?._id}`)
-                }}>
-                  <VisibilityIcon color="primary" />
-                </IconButton>
-              </StyledTableCell>
-              {/* <StyledTableCell align="right">
-                <IconButton onClick={() => {
-                  history.push(`/update/tariff/${car?._id}`)
-                }}>
-                  <EditIcon color="primary" />
-                </IconButton>
-              </StyledTableCell>
-              <StyledTableCell align="right">
-                <IconButton onClick={() => deleteCar(car?._id)} >
-                  <DeleteForeverIcon color="secondary" />
-                </IconButton>
-              </StyledTableCell> */}
-            </StyledTableRow>
+            <TableDataList trip={trip} key={trip._id} history={history} fetchTrips={fetchTrips} />
           ))}
         </TableBody>
       </Table>
@@ -292,7 +491,8 @@ function TripsPage({history}) {
           <div style={{...typeview,backgroundColor:active==="AIRPORT" ? '#4285F8': 'inherit'}} onClick={() => setActive("AIRPORT")}>AIRPORT</div>
       </div> */}
       
-      {renderTable(trips)}
+      {/* {renderTable(trips)} */}
+      <RenderTable arr={trips} fetchTrips={init} />
 
     <div style={{display:'flex',width:'90%',marginTop:10, marginLeft:'5%',flexDirection:'row-reverse' }}>
         {trips.length>=limit && <Button variant='contained' onClick={() =>{
