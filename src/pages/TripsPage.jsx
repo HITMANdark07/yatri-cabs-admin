@@ -105,6 +105,7 @@ function TableDataList({trip,history,fetchTrips}) {
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [ig, setIg] = useState("");
+  const [cig, setCig] = useState("");
   const toggleShow = () => {
     setShow((state) => !state);
   }
@@ -171,11 +172,27 @@ function TableDataList({trip,history,fetchTrips}) {
       console.log(err);
     })
   },[trip])
+
+  const init2 = React.useCallback(() => {
+    axios({
+      method:'GET',
+      url:`${process.env.REACT_APP_API}/car/list?type=${trip?.car_type?._id}&location=${trip?.tariff?.location?._id}&booked=false`,
+      headers:{
+        Authorization:`Bearer ${isAuthenticated().token}`
+      }
+    }).then((response) => {
+      console.log(response.data);
+      setCars(response?.data);
+    }).catch((err) => {
+      makeToast("error",err?.response?.data?.error);
+    })
+  },[trip]);
   React.useEffect(() => {
     if(show){
       init();
+      init2();
     }
-  },[show, init])
+  },[show, init, init2])
   return(
     <StyledTableRow key={trip._id}>
               <ModelComp open={show} setOpen={setShow}>
@@ -221,12 +238,13 @@ function TableDataList({trip,history,fetchTrips}) {
                       setIg(d[0]?.image);
                     }}
                   >
-                    
+                    {drivers.length===0 && <MenuItem value="">NO DRIVERS AVAILABLE</MenuItem>}
                     {drivers.map((d) => {
-                      return <MenuItem value={d._id}>{d.name}</MenuItem>
+                      return <MenuItem key={d._id} value={d._id}>{d.name}</MenuItem>
                     })}
                   </Select>
                 </FormControl>
+                {cig!==""  && <img src={`${process.env.REACT_APP_API}/image/photo/${cig}`} style={{width:'100%',margin:5, borderRadius:5}} alt={driver}  />}
                 <FormControl fullWidth sx={{my:2}}>
                   <InputLabel id="demo-simple-select-label" style={{marginLeft:'-1%'}}>Select Car</InputLabel>
                   <Select
@@ -236,20 +254,20 @@ function TableDataList({trip,history,fetchTrips}) {
                     label="Select Car"
                     onChange={(e) => {
                       setCar(e.target.value);
-                      const d = car.filter((f) => f._id===e.target.value);
-                      setIg(d[0]?.image);
+                      const d = cars.filter((f) => f._id===e.target.value);
+                      if(d) setCig(d[0]?.image);
                     }}
                   >
-                    
-                    {drivers.map((d) => {
-                      return <MenuItem value={d._id}>{d.name}</MenuItem>
+                    {cars.length===0 && <MenuItem value="">NO CAR AVAILABLE</MenuItem>}
+                    {cars.map((d) => {
+                      return <MenuItem key={d._id} value={d._id}>{d.reg_number}</MenuItem>
                     })}
                   </Select>
                 </FormControl>
                 <MyMapComponent isMarkerShown lat={trip?.start?.lat} lng={trip?.start?.lng} />
                 <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                <LoadingButton variant='contained' loading={loading1} disabled={driver==="" || loading1} onClick={assignDriver} sx={{my:1}} startIcon={<CheckIcon />}>ASSIGN AND CONFIRM</LoadingButton>
-                <LoadingButton variant='contained' loading={loading2} onClick={cancelTrip} disabled={driver!=="" || loading2} color='secondary' sx={{my:1}} startIcon={<CancelIcon />}>CANCEL TRIP</LoadingButton>
+                <LoadingButton variant='contained' loading={loading1} disabled={driver==="" || loading1 || car===""} onClick={assignDriver} sx={{my:1}} startIcon={<CheckIcon />}>ASSIGN AND CONFIRM</LoadingButton>
+                <LoadingButton variant='contained' loading={loading2} onClick={cancelTrip} disabled={loading2} color='secondary' sx={{my:1}} startIcon={<CancelIcon />}>CANCEL TRIP</LoadingButton>
                 </div>
                 </>
               </>
@@ -258,6 +276,7 @@ function TableDataList({trip,history,fetchTrips}) {
                 {trip?.tariff?.location?.name}
               </StyledTableCell>
               <StyledTableCell align="right">{trip?.tariff?.trip_type} ({trip?.tariff?.sub_trip_type})</StyledTableCell>
+              <StyledTableCell align="right">{trip?.car_type?.title}</StyledTableCell>
               <StyledTableCell align="right">
               <div 
               style={{backgroundColor: sclr[s.indexOf(trip?.status)], padding:5,borderRadius:2, fontWeight:'700'}}>
@@ -372,6 +391,7 @@ function TripsPage({history}) {
           <TableRow>
             <StyledTableCell>Location</StyledTableCell>
             <StyledTableCell align="right">Trip Type</StyledTableCell>
+            <StyledTableCell align="right">Car Type</StyledTableCell>
             <StyledTableCell align="right">Status</StyledTableCell>
             <StyledTableCell align="right">Pickup Date</StyledTableCell>
             <StyledTableCell align="right">Pick Time</StyledTableCell>

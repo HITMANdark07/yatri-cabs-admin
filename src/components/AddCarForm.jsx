@@ -8,6 +8,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import Stack from '@mui/material/Stack';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { isAuthenticated } from '../auth';
+import makeToast from '../Toaster';
 // import Autocomplete from "react-google-autocomplete";
 
 function AddCarForm() {
@@ -16,6 +17,7 @@ function AddCarForm() {
         reg_number:"",
         type:"",
         image:"",
+        showImage:"",
         location:"",
         make_model:"",
         permit_validity_from:new Date(),
@@ -66,7 +68,7 @@ function AddCarForm() {
         init();
         getLocs();
     },[]);
-    const {message, reg_number, type,permit_validity_from,make_model,permit_validity_to,image,location,insurance_validity_from, insurance_validity_to, status,loading,button, redirect} = values;
+    const {message, reg_number, type,permit_validity_from,make_model,showImage,permit_validity_to,image,location,insurance_validity_from, insurance_validity_to, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -212,7 +214,37 @@ function AddCarForm() {
               </select>
               
               <label style={{marginLeft:'2%'}} className='upload-image' htmlFor='car-image'>Upload Car Image </label>
-              <input id="car-image" style={{display:'none'}} type="file" accept="image/*" className='form-input' />
+              <input id="car-image" style={{display:'none'}} onChange={(e) => {
+                  const formData = new FormData();
+                  formData.set('photo',e.target.files[0]);
+                  axios({
+                      method:'POST',
+                      url:`${process.env.REACT_APP_API}/image/upload`,
+                      data:formData
+                  }).then((res) => {
+                      if(res?.data?.id){
+                        makeToast("success",res.data.message);
+                        setValues((state) => ({
+                            ...state,
+                            image:res.data.id,
+                            showImage:`${process.env.REACT_APP_API}/image/photo/${res.data.id}`
+                        }))
+                      }
+                      console.log(res.data);
+                  }).catch((err) => {
+                      makeToast("error", err.response.data.error);
+                  })
+                //   setValues((state) => ({
+                //       ...state,
+                //       photo:e.target.files[0],
+                //       showImage:URL.createObjectURL(e.target.files[0])
+                //   }))
+              }} type="file" accept="image/*" className='form-input' />
+              {
+                  showImage && (
+                      <img style={{marginLeft:'5%'}} src={showImage} alt="show-ig" width="250px" />
+                  )
+              }
               {/* <Autocomplete
                 apiKey={"AIzaSyCVuzwz465qhBxq0szBgIvbWLCYStzXlrE"}
                 onPlaceSelected={(place) => {

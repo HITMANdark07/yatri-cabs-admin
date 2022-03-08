@@ -9,6 +9,7 @@ import { TextField } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import makeToast from '../Toaster';
 
 function UpdateCarForm({carId}) {
 
@@ -16,6 +17,7 @@ function UpdateCarForm({carId}) {
         reg_number:"",
         type:"",
         image:"",
+        showImage:"",
         location:"",
         make_model:"",
         permit_validity_from:new Date(),
@@ -67,7 +69,8 @@ function UpdateCarForm({carId}) {
                     permit_validity_to:moment(res.data?.permit_validity_to).format('YYYY-MM-DD'),
                     insurance_validity_from:moment(res.data?.insurance_validity_from).format('YYYY-MM-DD'),
                     insurance_validity_to:moment(res.data?.insurance_validity_to).format('YYYY-MM-DD'),
-                    image:res.data?.image
+                    image:res.data?.image,
+                    showImage:`${process.env.REACT_APP_API}/image/photo/${res?.data?.image}`
                 }))
             }
         }).catch((err) => {
@@ -81,7 +84,7 @@ function UpdateCarForm({carId}) {
         getLocs();
         getCarDetails();
     },[init, getCarDetails]);
-    const {message, reg_number, type,permit_validity_from,permit_validity_to,location,image,insurance_validity_from,insurance_validity_to,make_model, status,loading,button, redirect} = values;
+    const {message, reg_number, type,permit_validity_from,permit_validity_to,showImage,location,image,insurance_validity_from,insurance_validity_to,make_model, status,loading,button, redirect} = values;
     const signup = (event) => {
         event.preventDefault();
         setValues((state) => ({
@@ -226,7 +229,37 @@ function UpdateCarForm({carId}) {
               </select>
               
               <label style={{marginLeft:'2%'}} className='upload-image' htmlFor='car-image'>Upload Car Image </label>
-              <input id="car-image" style={{display:'none'}} type="file" accept="image/*" className='form-input' />
+              <input id="car-image" style={{display:'none'}} type="file" onChange={(e) => {
+                  const formData = new FormData();
+                  formData.set('photo',e.target.files[0]);
+                  axios({
+                      method:'POST',
+                      url:`${process.env.REACT_APP_API}/image/upload`,
+                      data:formData
+                  }).then((res) => {
+                      if(res?.data?.id){
+                        makeToast("success",res.data.message);
+                        setValues((state) => ({
+                            ...state,
+                            image:res.data.id,
+                            showImage:`${process.env.REACT_APP_API}/image/photo/${res.data.id}`
+                        }))
+                      }
+                      console.log(res.data);
+                  }).catch((err) => {
+                      makeToast("error", err.response.data.error);
+                  })
+                //   setValues((state) => ({
+                //       ...state,
+                //       photo:e.target.files[0],
+                //       showImage:URL.createObjectURL(e.target.files[0])
+                //   }))
+              }} accept="image/*" className='form-input' />
+              {
+                  showImage && (
+                      <img style={{marginLeft:'5%'}} src={showImage} alt="show-ig" width="250px" />
+                  )
+              }
 
               <label>Make & Model <span style={{color:'red'}}>*</span></label>
               <input onChange={onchangeHandler} name="make_model" value={make_model} className='form-input' type="text" placeholder='Enter Make and Model' required />
